@@ -40,6 +40,54 @@ _division_1 (division_1_argument *argp, struct svc_req *rqstp)
 	return (division_1_svc(argp->arg1, argp->arg2, rqstp));
 }
 
+static res_calculo_vectores *
+_sumavector_1 (sumavector_1_argument *argp, struct svc_req *rqstp)
+{
+	return (sumavector_1_svc(argp->arg1, argp->arg2, rqstp));
+}
+
+static res_calculo_vectores *
+_restavector_1 (restavector_1_argument *argp, struct svc_req *rqstp)
+{
+	return (restavector_1_svc(argp->arg1, argp->arg2, rqstp));
+}
+
+static res_calculo_vectores *
+_multiplicacionvector_1 (multiplicacionvector_1_argument *argp, struct svc_req *rqstp)
+{
+	return (multiplicacionvector_1_svc(argp->arg1, argp->arg2, rqstp));
+}
+
+static res_calculo_vectores *
+_multiplicacionescalar_1 (multiplicacionescalar_1_argument *argp, struct svc_req *rqstp)
+{
+	return (multiplicacionescalar_1_svc(argp->arg1, argp->arg2, rqstp));
+}
+
+static res_calculo_matrices *
+_sumamatriz_1 (sumamatriz_1_argument *argp, struct svc_req *rqstp)
+{
+	return (sumamatriz_1_svc(argp->arg1, argp->arg2, rqstp));
+}
+
+static res_calculo_matrices *
+_restamatriz_1 (restamatriz_1_argument *argp, struct svc_req *rqstp)
+{
+	return (restamatriz_1_svc(argp->arg1, argp->arg2, rqstp));
+}
+
+static res_calculo_matrices *
+_multiplicacionmatriz_1 (multiplicacionmatriz_1_argument *argp, struct svc_req *rqstp)
+{
+	return (multiplicacionmatriz_1_svc(argp->arg1, argp->arg2, rqstp));
+}
+
+static res_calculo_matrices *
+_multiplicacionmatrizescalar_1 (multiplicacionmatrizescalar_1_argument *argp, struct svc_req *rqstp)
+{
+	return (multiplicacionmatrizescalar_1_svc(argp->arg1, argp->arg2, rqstp));
+}
+
 static void
 calculadoraprog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 {
@@ -48,6 +96,14 @@ calculadoraprog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		resta_1_argument resta_1_arg;
 		multiplicacion_1_argument multiplicacion_1_arg;
 		division_1_argument division_1_arg;
+		sumavector_1_argument sumavector_1_arg;
+		restavector_1_argument restavector_1_arg;
+		multiplicacionvector_1_argument multiplicacionvector_1_arg;
+		multiplicacionescalar_1_argument multiplicacionescalar_1_arg;
+		sumamatriz_1_argument sumamatriz_1_arg;
+		restamatriz_1_argument restamatriz_1_arg;
+		multiplicacionmatriz_1_argument multiplicacionmatriz_1_arg;
+		multiplicacionmatrizescalar_1_argument multiplicacionmatrizescalar_1_arg;
 	} argument;
 	char *result;
 	xdrproc_t _xdr_argument, _xdr_result;
@@ -80,6 +136,54 @@ calculadoraprog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		_xdr_argument = (xdrproc_t) xdr_division_1_argument;
 		_xdr_result = (xdrproc_t) xdr_res_calculo;
 		local = (char *(*)(char *, struct svc_req *)) _division_1;
+		break;
+
+	case SUMAVECTOR:
+		_xdr_argument = (xdrproc_t) xdr_sumavector_1_argument;
+		_xdr_result = (xdrproc_t) xdr_res_calculo_vectores;
+		local = (char *(*)(char *, struct svc_req *)) _sumavector_1;
+		break;
+
+	case RESTAVECTOR:
+		_xdr_argument = (xdrproc_t) xdr_restavector_1_argument;
+		_xdr_result = (xdrproc_t) xdr_res_calculo_vectores;
+		local = (char *(*)(char *, struct svc_req *)) _restavector_1;
+		break;
+
+	case MULTIPLICACIONVECTOR:
+		_xdr_argument = (xdrproc_t) xdr_multiplicacionvector_1_argument;
+		_xdr_result = (xdrproc_t) xdr_res_calculo_vectores;
+		local = (char *(*)(char *, struct svc_req *)) _multiplicacionvector_1;
+		break;
+
+	case MULTIPLICACIONESCALAR:
+		_xdr_argument = (xdrproc_t) xdr_multiplicacionescalar_1_argument;
+		_xdr_result = (xdrproc_t) xdr_res_calculo_vectores;
+		local = (char *(*)(char *, struct svc_req *)) _multiplicacionescalar_1;
+		break;
+
+	case SUMAMATRIZ:
+		_xdr_argument = (xdrproc_t) xdr_sumamatriz_1_argument;
+		_xdr_result = (xdrproc_t) xdr_res_calculo_matrices;
+		local = (char *(*)(char *, struct svc_req *)) _sumamatriz_1;
+		break;
+
+	case RESTAMATRIZ:
+		_xdr_argument = (xdrproc_t) xdr_restamatriz_1_argument;
+		_xdr_result = (xdrproc_t) xdr_res_calculo_matrices;
+		local = (char *(*)(char *, struct svc_req *)) _restamatriz_1;
+		break;
+
+	case MULTIPLICACIONMATRIZ:
+		_xdr_argument = (xdrproc_t) xdr_multiplicacionmatriz_1_argument;
+		_xdr_result = (xdrproc_t) xdr_res_calculo_matrices;
+		local = (char *(*)(char *, struct svc_req *)) _multiplicacionmatriz_1;
+		break;
+
+	case MULTIPLICACIONMATRIZESCALAR:
+		_xdr_argument = (xdrproc_t) xdr_multiplicacionmatrizescalar_1_argument;
+		_xdr_result = (xdrproc_t) xdr_res_calculo_matrices;
+		local = (char *(*)(char *, struct svc_req *)) _multiplicacionmatrizescalar_1;
 		break;
 
 	default:

@@ -76,3 +76,139 @@ division_1(int arg1, int arg2,  CLIENT *clnt)
 	}
 	return (&clnt_res);
 }
+
+res_calculo_vectores *
+sumavector_1(vec arg1, vec arg2,  CLIENT *clnt)
+{
+	sumavector_1_argument arg;
+	static res_calculo_vectores clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	arg.arg1 = arg1;
+	arg.arg2 = arg2;
+	if (clnt_call (clnt, SUMAVECTOR, (xdrproc_t) xdr_sumavector_1_argument, (caddr_t) &arg,
+		(xdrproc_t) xdr_res_calculo_vectores, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
+res_calculo_vectores *
+restavector_1(vec arg1, vec arg2,  CLIENT *clnt)
+{
+	restavector_1_argument arg;
+	static res_calculo_vectores clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	arg.arg1 = arg1;
+	arg.arg2 = arg2;
+	if (clnt_call (clnt, RESTAVECTOR, (xdrproc_t) xdr_restavector_1_argument, (caddr_t) &arg,
+		(xdrproc_t) xdr_res_calculo_vectores, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
+res_calculo_vectores *
+multiplicacionvector_1(vec arg1, vec arg2,  CLIENT *clnt)
+{
+	multiplicacionvector_1_argument arg;
+	static res_calculo_vectores clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	arg.arg1 = arg1;
+	arg.arg2 = arg2;
+	if (clnt_call (clnt, MULTIPLICACIONVECTOR, (xdrproc_t) xdr_multiplicacionvector_1_argument, (caddr_t) &arg,
+		(xdrproc_t) xdr_res_calculo_vectores, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
+res_calculo_vectores *
+multiplicacionescalar_1(vec arg1, int arg2,  CLIENT *clnt)
+{
+	multiplicacionescalar_1_argument arg;
+	static res_calculo_vectores clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	arg.arg1 = arg1;
+	arg.arg2 = arg2;
+	if (clnt_call (clnt, MULTIPLICACIONESCALAR, (xdrproc_t) xdr_multiplicacionescalar_1_argument, (caddr_t) &arg,
+		(xdrproc_t) xdr_res_calculo_vectores, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
+res_calculo_matrices *
+sumamatriz_1(matriz arg1, matriz arg2,  CLIENT *clnt)
+{
+	sumamatriz_1_argument arg;
+	static res_calculo_matrices clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	arg.arg1 = arg1;
+	arg.arg2 = arg2;
+	if (clnt_call (clnt, SUMAMATRIZ, (xdrproc_t) xdr_sumamatriz_1_argument, (caddr_t) &arg,
+		(xdrproc_t) xdr_res_calculo_matrices, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
+res_calculo_matrices *
+restamatriz_1(matriz arg1, matriz arg2,  CLIENT *clnt)
+{
+	restamatriz_1_argument arg;
+	static res_calculo_matrices clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	arg.arg1 = arg1;
+	arg.arg2 = arg2;
+	if (clnt_call (clnt, RESTAMATRIZ, (xdrproc_t) xdr_restamatriz_1_argument, (caddr_t) &arg,
+		(xdrproc_t) xdr_res_calculo_matrices, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
+res_calculo_matrices *
+multiplicacionmatriz_1(matriz arg1, matriz arg2,  CLIENT *clnt)
+{
+	multiplicacionmatriz_1_argument arg;
+	static res_calculo_matrices clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	arg.arg1 = arg1;
+	arg.arg2 = arg2;
+	if (clnt_call (clnt, MULTIPLICACIONMATRIZ, (xdrproc_t) xdr_multiplicacionmatriz_1_argument, (caddr_t) &arg,
+		(xdrproc_t) xdr_res_calculo_matrices, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
+res_calculo_matrices *
+multiplicacionmatrizescalar_1(matriz arg1, int arg2,  CLIENT *clnt)
+{
+	multiplicacionmatrizescalar_1_argument arg;
+	static res_calculo_matrices clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	arg.arg1 = arg1;
+	arg.arg2 = arg2;
+	if (clnt_call (clnt, MULTIPLICACIONMATRIZESCALAR, (xdrproc_t) xdr_multiplicacionmatrizescalar_1_argument, (caddr_t) &arg,
+		(xdrproc_t) xdr_res_calculo_matrices, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}

@@ -49,3 +49,123 @@ division_1_svc(int arg1, int arg2,  struct svc_req *rqstp)
 
 	return &result;
 }
+
+res_calculo_vectores *
+sumavector_1_svc(vec arg1, vec arg2,  struct svc_req *rqstp)
+{
+	static res_calculo_vectores  result;
+	xdr_free(xdr_res_calculo_vectores, &result);
+
+	int tam = arg1.vec_len;
+
+	result.res_calculo_vectores_u.resultado.vec_val = malloc(tam * sizeof(int));
+	result.res_calculo_vectores_u.resultado.vec_len = tam;
+
+	for(unsigned int i = 0; i < tam; i++)
+		result.res_calculo_vectores_u.resultado.vec_val[i] = arg1.vec_val[i] + arg2.vec_val[i];
+
+	return &result;
+}
+
+res_calculo_vectores *
+restavector_1_svc(vec arg1, vec arg2,  struct svc_req *rqstp)
+{
+	static res_calculo_vectores  result;
+	xdr_free(xdr_res_calculo_vectores, &result);
+
+	int tam = arg1.vec_len;
+
+	result.res_calculo_vectores_u.resultado.vec_val = malloc(tam * sizeof(int));
+	result.res_calculo_vectores_u.resultado.vec_len = tam;
+
+	for(unsigned int i = 0; i < tam; i++)
+		result.res_calculo_vectores_u.resultado.vec_val[i] = arg1.vec_val[i] - arg2.vec_val[i];
+
+
+	return &result;
+}
+
+res_calculo_vectores *
+multiplicacionvector_1_svc(vec arg1, vec arg2,  struct svc_req *rqstp)
+{
+	static res_calculo_vectores  result;
+	xdr_free(xdr_res_calculo_vectores, &result);
+
+	int tam = arg1.vec_len;
+
+	result.res_calculo_vectores_u.resultado.vec_val = malloc(tam * sizeof(int));
+	result.res_calculo_vectores_u.resultado.vec_len = tam;
+
+	for(unsigned int i = 0; i < tam; i++)
+		result.res_calculo_vectores_u.resultado.vec_val[i] = arg1.vec_val[i] * arg2.vec_val[i];
+
+
+	return &result;
+}
+
+res_calculo_vectores *
+multiplicacionescalar_1_svc(vec arg1, int arg2,  struct svc_req *rqstp)
+{
+	static res_calculo_vectores  result;
+	xdr_free(xdr_res_calculo_vectores, &result);
+
+	int tam = arg1.vec_len;
+
+	result.res_calculo_vectores_u.resultado.vec_val = malloc(tam * sizeof(int));
+	result.res_calculo_vectores_u.resultado.vec_len = tam;
+
+	for(unsigned int i = 0; i < tam; i++)
+		result.res_calculo_vectores_u.resultado.vec_val[i] = arg1.vec_val[i] * arg2;
+
+	return &result;
+}
+
+res_calculo_matrices *
+sumamatriz_1_svc(matriz arg1, matriz arg2,  struct svc_req *rqstp)
+{
+	static res_calculo_matrices  result;
+	xdr_free(xdr_res_calculo_matrices, &result);
+
+
+
+	return &result;
+}
+
+res_calculo_matrices *
+restamatriz_1_svc(matriz arg1, matriz arg2,  struct svc_req *rqstp)
+{
+	static res_calculo_matrices  result;
+	xdr_free(xdr_res_calculo_matrices, &result);
+
+	/*
+	 * insert server code here
+	 */
+
+	return &result;
+}
+
+res_calculo_matrices *
+multiplicacionmatriz_1_svc(matriz arg1, matriz arg2,  struct svc_req *rqstp)
+{
+	static res_calculo_matrices  result;
+	xdr_free(xdr_res_calculo_matrices, &result);
+
+	/*
+	 * insert server code here
+	 */
+
+	return &result;
+}
+
+res_calculo_matrices *
+multiplicacionmatrizescalar_1_svc(matriz arg1, int arg2,  struct svc_req *rqstp)
+{
+	static res_calculo_matrices  result;
+	xdr_free(xdr_res_calculo_matrices, &result);
+
+	/*
+	 * insert server code here
+	 */
+
+	return &result;
+}

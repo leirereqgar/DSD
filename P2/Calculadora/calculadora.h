@@ -14,6 +14,18 @@ extern "C" {
 #endif
 
 
+typedef struct {
+	u_int vec_len;
+	int *vec_val;
+} vec;
+
+struct matriz {
+	u_int orden;
+	vec *filas;
+};
+typedef struct matriz matriz;
+
+
 struct res_calculo {
 	int err;
 	union {
@@ -21,6 +33,22 @@ struct res_calculo {
 	} res_calculo_u;
 };
 typedef struct res_calculo res_calculo;
+
+struct res_calculo_vectores {
+	int err;
+	union {
+		vec resultado;
+	} res_calculo_vectores_u;
+};
+typedef struct res_calculo_vectores res_calculo_vectores;
+
+struct res_calculo_matrices {
+	int err;
+	union {
+		matriz resultado;
+	} res_calculo_matrices_u;
+};
+typedef struct res_calculo_matrices res_calculo_matrices;
 
 struct suma_1_argument {
 	int arg1;
@@ -46,6 +74,54 @@ struct division_1_argument {
 };
 typedef struct division_1_argument division_1_argument;
 
+struct sumavector_1_argument {
+	vec arg1;
+	vec arg2;
+};
+typedef struct sumavector_1_argument sumavector_1_argument;
+
+struct restavector_1_argument {
+	vec arg1;
+	vec arg2;
+};
+typedef struct restavector_1_argument restavector_1_argument;
+
+struct multiplicacionvector_1_argument {
+	vec arg1;
+	vec arg2;
+};
+typedef struct multiplicacionvector_1_argument multiplicacionvector_1_argument;
+
+struct multiplicacionescalar_1_argument {
+	vec arg1;
+	int arg2;
+};
+typedef struct multiplicacionescalar_1_argument multiplicacionescalar_1_argument;
+
+struct sumamatriz_1_argument {
+	matriz arg1;
+	matriz arg2;
+};
+typedef struct sumamatriz_1_argument sumamatriz_1_argument;
+
+struct restamatriz_1_argument {
+	matriz arg1;
+	matriz arg2;
+};
+typedef struct restamatriz_1_argument restamatriz_1_argument;
+
+struct multiplicacionmatriz_1_argument {
+	matriz arg1;
+	matriz arg2;
+};
+typedef struct multiplicacionmatriz_1_argument multiplicacionmatriz_1_argument;
+
+struct multiplicacionmatrizescalar_1_argument {
+	matriz arg1;
+	int arg2;
+};
+typedef struct multiplicacionmatrizescalar_1_argument multiplicacionmatrizescalar_1_argument;
+
 #define CALCULADORAPROG 0x20000001
 #define CALCULADORAVER 1
 
@@ -62,6 +138,30 @@ extern  res_calculo * multiplicacion_1_svc(int , int , struct svc_req *);
 #define DIVISION 4
 extern  res_calculo * division_1(int , int , CLIENT *);
 extern  res_calculo * division_1_svc(int , int , struct svc_req *);
+#define SUMAVECTOR 5
+extern  res_calculo_vectores * sumavector_1(vec , vec , CLIENT *);
+extern  res_calculo_vectores * sumavector_1_svc(vec , vec , struct svc_req *);
+#define RESTAVECTOR 6
+extern  res_calculo_vectores * restavector_1(vec , vec , CLIENT *);
+extern  res_calculo_vectores * restavector_1_svc(vec , vec , struct svc_req *);
+#define MULTIPLICACIONVECTOR 7
+extern  res_calculo_vectores * multiplicacionvector_1(vec , vec , CLIENT *);
+extern  res_calculo_vectores * multiplicacionvector_1_svc(vec , vec , struct svc_req *);
+#define MULTIPLICACIONESCALAR 8
+extern  res_calculo_vectores * multiplicacionescalar_1(vec , int , CLIENT *);
+extern  res_calculo_vectores * multiplicacionescalar_1_svc(vec , int , struct svc_req *);
+#define SUMAMATRIZ 9
+extern  res_calculo_matrices * sumamatriz_1(matriz , matriz , CLIENT *);
+extern  res_calculo_matrices * sumamatriz_1_svc(matriz , matriz , struct svc_req *);
+#define RESTAMATRIZ 10
+extern  res_calculo_matrices * restamatriz_1(matriz , matriz , CLIENT *);
+extern  res_calculo_matrices * restamatriz_1_svc(matriz , matriz , struct svc_req *);
+#define MULTIPLICACIONMATRIZ 11
+extern  res_calculo_matrices * multiplicacionmatriz_1(matriz , matriz , CLIENT *);
+extern  res_calculo_matrices * multiplicacionmatriz_1_svc(matriz , matriz , struct svc_req *);
+#define MULTIPLICACIONMATRIZESCALAR 12
+extern  res_calculo_matrices * multiplicacionmatrizescalar_1(matriz , int , CLIENT *);
+extern  res_calculo_matrices * multiplicacionmatrizescalar_1_svc(matriz , int , struct svc_req *);
 extern int calculadoraprog_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
@@ -77,24 +177,74 @@ extern  res_calculo * multiplicacion_1_svc();
 #define DIVISION 4
 extern  res_calculo * division_1();
 extern  res_calculo * division_1_svc();
+#define SUMAVECTOR 5
+extern  res_calculo_vectores * sumavector_1();
+extern  res_calculo_vectores * sumavector_1_svc();
+#define RESTAVECTOR 6
+extern  res_calculo_vectores * restavector_1();
+extern  res_calculo_vectores * restavector_1_svc();
+#define MULTIPLICACIONVECTOR 7
+extern  res_calculo_vectores * multiplicacionvector_1();
+extern  res_calculo_vectores * multiplicacionvector_1_svc();
+#define MULTIPLICACIONESCALAR 8
+extern  res_calculo_vectores * multiplicacionescalar_1();
+extern  res_calculo_vectores * multiplicacionescalar_1_svc();
+#define SUMAMATRIZ 9
+extern  res_calculo_matrices * sumamatriz_1();
+extern  res_calculo_matrices * sumamatriz_1_svc();
+#define RESTAMATRIZ 10
+extern  res_calculo_matrices * restamatriz_1();
+extern  res_calculo_matrices * restamatriz_1_svc();
+#define MULTIPLICACIONMATRIZ 11
+extern  res_calculo_matrices * multiplicacionmatriz_1();
+extern  res_calculo_matrices * multiplicacionmatriz_1_svc();
+#define MULTIPLICACIONMATRIZESCALAR 12
+extern  res_calculo_matrices * multiplicacionmatrizescalar_1();
+extern  res_calculo_matrices * multiplicacionmatrizescalar_1_svc();
 extern int calculadoraprog_1_freeresult ();
 #endif /* K&R C */
 
 /* the xdr functions */
 
 #if defined(__STDC__) || defined(__cplusplus)
+extern  bool_t xdr_vec (XDR *, vec*);
+extern  bool_t xdr_matriz (XDR *, matriz*);
+extern  bool_t xdr_matriz (XDR *, matriz*);
 extern  bool_t xdr_res_calculo (XDR *, res_calculo*);
+extern  bool_t xdr_res_calculo_vectores (XDR *, res_calculo_vectores*);
+extern  bool_t xdr_res_calculo_matrices (XDR *, res_calculo_matrices*);
 extern  bool_t xdr_suma_1_argument (XDR *, suma_1_argument*);
 extern  bool_t xdr_resta_1_argument (XDR *, resta_1_argument*);
 extern  bool_t xdr_multiplicacion_1_argument (XDR *, multiplicacion_1_argument*);
 extern  bool_t xdr_division_1_argument (XDR *, division_1_argument*);
+extern  bool_t xdr_sumavector_1_argument (XDR *, sumavector_1_argument*);
+extern  bool_t xdr_restavector_1_argument (XDR *, restavector_1_argument*);
+extern  bool_t xdr_multiplicacionvector_1_argument (XDR *, multiplicacionvector_1_argument*);
+extern  bool_t xdr_multiplicacionescalar_1_argument (XDR *, multiplicacionescalar_1_argument*);
+extern  bool_t xdr_sumamatriz_1_argument (XDR *, sumamatriz_1_argument*);
+extern  bool_t xdr_restamatriz_1_argument (XDR *, restamatriz_1_argument*);
+extern  bool_t xdr_multiplicacionmatriz_1_argument (XDR *, multiplicacionmatriz_1_argument*);
+extern  bool_t xdr_multiplicacionmatrizescalar_1_argument (XDR *, multiplicacionmatrizescalar_1_argument*);
 
 #else /* K&R C */
+extern bool_t xdr_vec ();
+extern bool_t xdr_matriz ();
+extern bool_t xdr_matriz ();
 extern bool_t xdr_res_calculo ();
+extern bool_t xdr_res_calculo_vectores ();
+extern bool_t xdr_res_calculo_matrices ();
 extern bool_t xdr_suma_1_argument ();
 extern bool_t xdr_resta_1_argument ();
 extern bool_t xdr_multiplicacion_1_argument ();
 extern bool_t xdr_division_1_argument ();
+extern bool_t xdr_sumavector_1_argument ();
+extern bool_t xdr_restavector_1_argument ();
+extern bool_t xdr_multiplicacionvector_1_argument ();
+extern bool_t xdr_multiplicacionescalar_1_argument ();
+extern bool_t xdr_sumamatriz_1_argument ();
+extern bool_t xdr_restamatriz_1_argument ();
+extern bool_t xdr_multiplicacionmatriz_1_argument ();
+extern bool_t xdr_multiplicacionmatrizescalar_1_argument ();
 
 #endif /* K&R C */
 

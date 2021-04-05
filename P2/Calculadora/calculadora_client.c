@@ -4,6 +4,8 @@
  * as a guideline for developing your own functions.
  */
 
+#include <ctype.h>
+#include <stdbool.h>
 #include "calculadora.h"
 
 void basicas (char *host, int operando1, char operacion, int operando2) {
@@ -34,70 +36,206 @@ void basicas (char *host, int operando1, char operacion, int operando2) {
 
 	printf("El resultado es: %d\n", result->res_calculo_u.resultado);
 
+	xdr_free(xdr_res_calculo, &result);
+
 	#ifndef	DEBUG
 		clnt_destroy (clnt);
 	#endif	 /* DEBUG */
 }
 
-void calculadoraprog_1(char *host) {
+void vectoriales (char * host, vec *operando1, char operacion, vec *operando2) {
 	CLIENT *clnt;
-	res_calculo  *result_1;
-	int suma_1_arg1;
-	int suma_1_arg2;
-	res_calculo  *result_2;
-	int resta_1_arg1;
-	int resta_1_arg2;
-	res_calculo  *result_3;
-	int multiplicacion_1_arg1;
-	int multiplicacion_1_arg2;
-	res_calculo  *result_4;
-	int division_1_arg1;
-	int division_1_arg2;
+	res_calculo_vectores * result;
+	int escalar;
 
-#ifndef	DEBUG
-	clnt = clnt_create (host, CALCULADORAPROG, CALCULADORAVER, "udp");
-	if (clnt == NULL) {
-		clnt_pcreateerror (host);
-		exit (1);
-	}
-#endif	/* DEBUG */
+	#ifndef DEBUG
+		clnt = clnt_create (host, CALCULADORAPROG, CALCULADORAVER, "udp");
+		if (clnt == NULL) {
+			clnt_pcreateerror (host);
+			exit (1);
+		}
+	#endif	/* DEBUG */
 
-	result_1 = suma_1(suma_1_arg1, suma_1_arg2, clnt);
-	if (result_1 == (res_calculo *) NULL) {
-		clnt_perror (clnt, "call failed");
+	if(operacion == '+')
+		result = sumavector_1(*operando1, *operando2, clnt);
+	else if(operacion == '-')
+		result = restavector_1(*operando1, *operando2, clnt);
+	else if(operacion == 'x')
+		result = multiplicacionvector_1(*operando1, *operando2, clnt);
+	else
+		perror("Operación inválida\n");
+
+	if(result == (res_calculo_vectores *) NULL)
+		clnt_perror(clnt, "call failed");
+
+	printf("El resultado es: ");
+	int tam = result->res_calculo_vectores_u.resultado.vec_len;
+	for (unsigned int i = 0; i < tam; i++) {
+		printf("%d,", result->res_calculo_vectores_u.resultado.vec_val[i]);
 	}
-	result_2 = resta_1(resta_1_arg1, resta_1_arg2, clnt);
-	if (result_2 == (res_calculo *) NULL) {
-		clnt_perror (clnt, "call failed");
+
+	#ifndef	DEBUG
+		clnt_destroy (clnt);
+	#endif	 /* DEBUG */
+}
+
+void vectorPorEscalar (char *host, vec *operando1, int operando2) {
+	CLIENT *clnt;
+	res_calculo_vectores * result;
+
+	#ifndef DEBUG
+		clnt = clnt_create (host, CALCULADORAPROG, CALCULADORAVER, "udp");
+		if (clnt == NULL) {
+			clnt_pcreateerror (host);
+			exit (1);
+		}
+	#endif	/* DEBUG */
+
+	result = multiplicacionescalar_1(*operando1, operando2, clnt);
+
+	int tam = result->res_calculo_vectores_u.resultado.vec_len;
+	for (unsigned int i = 0; i < tam; i++) {
+		printf("%d,", result->res_calculo_vectores_u.resultado.vec_val[i]);
 	}
-	result_3 = multiplicacion_1(multiplicacion_1_arg1, multiplicacion_1_arg2, clnt);
-	if (result_3 == (res_calculo *) NULL) {
-		clnt_perror (clnt, "call failed");
+
+	#ifndef	DEBUG
+		clnt_destroy (clnt);
+	#endif	 /* DEBUG */
+}
+
+void matriciales (char * host) {
+	CLIENT *clnt;
+	res_calculo_matrices * result;
+
+	matriz arg1;
+	matriz arg2;
+	int escalar;
+
+	#ifndef DEBUG
+		clnt = clnt_create (host, CALCULADORAPROG, CALCULADORAVER, "udp");
+		if (clnt == NULL) {
+			clnt_pcreateerror (host);
+			exit (1);
+		}
+	#endif	/* DEBUG */
+
+	result = sumamatriz_1(arg1, arg2, clnt);
+	result = restamatriz_1(arg1, arg2, clnt);
+	result = multiplicacionmatriz_1(arg1, arg2, clnt);
+	result = multiplicacionmatrizescalar_1(arg1, escalar, clnt);
+
+	#ifndef	DEBUG
+		clnt_destroy (clnt);
+	#endif	 /* DEBUG */
+}
+
+void ayuda () {
+	printf("Uso: ./calculadora_client localhost operando1 operador operando2");
+}
+
+bool ambosEscalares (char *operando1, char *operando2) {
+	return isdigit(operando1[0]) && isdigit(operando2[0]);
+}
+
+bool ambosVectores (char *operando1, char *operando2) {
+	return operando1[0] == '(' && operando2[0] == '(';
+}
+
+bool ambosMatrices (char *operando1, char *operando2) {
+	return operando1[0] == '[' && operando2[0] == '[';
+}
+
+bool soloUnVector (char *operando1, char *operando2) {
+	return operando1[0] == '(' || operando2[0] == '(';
+}
+
+bool soloUnaMatriz (char *operando1, char *operando2) {
+	return operando1[0] == '[' || operando2[0] == '[';
+}
+
+vec *crearVector (char *vector_caracteres) {
+	vec *vector = 0;
+	unsigned int tam = 1;
+
+	for (unsigned int i = 0; i < strlen(vector_caracteres); i++) {
+		if(vector_caracteres[i] == ',')
+			tam++; //El tamaño será el número de comas más uno
 	}
-	result_4 = division_1(division_1_arg1, division_1_arg2, clnt);
-	if (result_4 == (res_calculo *) NULL) {
-		clnt_perror (clnt, "call failed");
+
+	vector = malloc(sizeof(vec));
+	vector->vec_val = malloc(tam * sizeof(int));
+	vector->vec_len = tam;
+
+	int indice = 0;
+	for (unsigned int i = 1; i < strlen(vector_caracteres); i++) {
+		char buffer[256];
+
+		unsigned int j = 0;
+		while(vector_caracteres != '(' && vector_caracteres[i] != ',' && vector_caracteres[i] != ')') {
+			buffer[j] = vector_caracteres[i];
+			j++;
+			i++;
+		}
+		buffer[j] = '\0';
+
+		vector->vec_val[indice] = atoi(buffer);
+		indice++;
 	}
-#ifndef	DEBUG
-	clnt_destroy (clnt);
-#endif	 /* DEBUG */
+
+	return vector;
+}
+
+void leerArgumentos (int argc, char **argv) {
+	char *host = argv[1];
+	char operacion = *argv[3];
+
+	char *operando1 = argv[2];
+	char *operando2 = argv[4];
+
+	if(ambosEscalares(operando1, operando2))
+		basicas(host, atoi(operando1), operacion, atoi(operando2));
+	else if (ambosVectores(operando1, operando2)){
+		vec *vector1 = crearVector(operando1);
+		vec *vector2 = crearVector(operando2);
+
+		vectoriales(host, vector1, operacion, vector2);
+	}
+	else if (ambosMatrices(operando1, operando2)) {
+		printf("modo matricess");
+	}
+	else if (soloUnVector(operando1, operando2)) {
+		if(isdigit(operando1[0])) {
+			vec *vector = crearVector(operando2);
+
+			vectorPorEscalar(host, vector, atoi(operando1));
+		}
+		else {//operando2 digito
+			vec *vector = crearVector(operando1);
+
+			vectorPorEscalar(host, vector, atoi(operando2));
+		}
+	}
+	else if (soloUnaMatriz(operando1, operando2)) {
+		if(isdigit(operando1[0])) {
+			printf("escalar por matriz");
+		}
+		else {//operando2 digito
+			printf("matriz por escalar");
+		}
+	}
+	else
+		printf("No sé que operación intentas hacer, pero no esta implementada");
+
 }
 
 
-int main (int argc, char *argv[]) {
-	char *host;
-
+int main (int argc, char **argv) {
 	if (argc < 2) {
-		printf ("usage: %s server_host\n", argv[0]);
+		ayuda();
 		exit (1);
 	}
-	host = argv[1];
-
-	int operando1 = atoi(argv[2]);
-	int operando2 = atoi(argv[4]);
-
-	char operacion = *argv[3];
-
-	basicas(host, operando1, operacion, operando2);
+	else {
+		leerArgumentos(argc, argv);
+	}
 exit (0);
 }
