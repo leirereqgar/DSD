@@ -126,7 +126,21 @@ sumamatriz_1_svc(matriz arg1, matriz arg2,  struct svc_req *rqstp)
 	static res_calculo_matrices  result;
 	xdr_free(xdr_res_calculo_matrices, &result);
 
+	const int orden = arg1.orden;
+	result.res_calculo_matrices_u.resultado.orden = orden;
+	result.res_calculo_matrices_u.resultado.filas = malloc(sizeof(vec[orden]));
 
+	for (unsigned int i = 0; i < orden; i++) {
+		result.res_calculo_matrices_u.resultado.filas[i].vec_val = malloc(sizeof(int)*orden);
+		result.res_calculo_matrices_u.resultado.filas[i].vec_len = orden;
+	}
+
+	for (unsigned int i = 0; i < orden; i++) {
+		for(unsigned int j = 0; j < orden; j++) {
+			result.res_calculo_matrices_u.resultado.filas[i].vec_val[j] = arg1.filas[i].vec_val[j] +
+			                                                              arg2.filas[i].vec_val[j];
+		}
+	}
 
 	return &result;
 }
@@ -137,9 +151,21 @@ restamatriz_1_svc(matriz arg1, matriz arg2,  struct svc_req *rqstp)
 	static res_calculo_matrices  result;
 	xdr_free(xdr_res_calculo_matrices, &result);
 
-	/*
-	 * insert server code here
-	 */
+	const int orden = arg1.orden;
+	result.res_calculo_matrices_u.resultado.orden = orden;
+	result.res_calculo_matrices_u.resultado.filas = malloc(sizeof(vec[orden]));
+
+	for (unsigned int i = 0; i < orden; i++) {
+		result.res_calculo_matrices_u.resultado.filas[i].vec_val = malloc(sizeof(int)*orden);
+		result.res_calculo_matrices_u.resultado.filas[i].vec_len = orden;
+	}
+
+	for (unsigned int i = 0; i < orden; i++) {
+		for(unsigned int j = 0; j < orden; j++) {
+			result.res_calculo_matrices_u.resultado.filas[i].vec_val[j] = arg1.filas[i].vec_val[j] -
+			                                                              arg2.filas[i].vec_val[j];
+		}
+	}
 
 	return &result;
 }
@@ -150,9 +176,21 @@ multiplicacionmatriz_1_svc(matriz arg1, matriz arg2,  struct svc_req *rqstp)
 	static res_calculo_matrices  result;
 	xdr_free(xdr_res_calculo_matrices, &result);
 
-	/*
-	 * insert server code here
-	 */
+	const int orden = arg1.orden;
+	result.res_calculo_matrices_u.resultado.orden = orden;
+	result.res_calculo_matrices_u.resultado.filas = malloc(sizeof(vec[orden]));
+
+	for (unsigned int i = 0; i < orden; i++) {
+		result.res_calculo_matrices_u.resultado.filas[i].vec_val = malloc(sizeof(int)*orden);
+		result.res_calculo_matrices_u.resultado.filas[i].vec_len = orden;
+	}
+
+	for (unsigned int i = 0; i < orden; i++) {
+		for(unsigned int j = 0; j < orden; j++) {
+			result.res_calculo_matrices_u.resultado.filas[i].vec_val[j] = arg1.filas[i].vec_val[j] *
+			                                                              arg2.filas[i].vec_val[j];
+		}
+	}
 
 	return &result;
 }
@@ -163,9 +201,22 @@ multiplicacionmatrizescalar_1_svc(matriz arg1, int arg2,  struct svc_req *rqstp)
 	static res_calculo_matrices  result;
 	xdr_free(xdr_res_calculo_matrices, &result);
 
-	/*
-	 * insert server code here
-	 */
+	const int orden = arg1.orden;
+	result.res_calculo_matrices_u.resultado.orden = orden;
+	result.res_calculo_matrices_u.resultado.filas = malloc(sizeof(vec[orden]));
+
+	for (unsigned int i = 0; i < orden; i++) {
+		result.res_calculo_matrices_u.resultado.filas[i].vec_val = malloc(sizeof(int)*orden);
+		result.res_calculo_matrices_u.resultado.filas[i].vec_len = orden;
+	}
+
+	for (unsigned int i = 0; i < orden; i++) {
+		for(unsigned int j = 0; j < orden; j++) {
+			result.res_calculo_matrices_u.resultado.filas[i].vec_val[j] = arg1.filas[i].vec_val[j] * arg2;
+		}
+	}
+
+	return &result;
 
 	return &result;
 }

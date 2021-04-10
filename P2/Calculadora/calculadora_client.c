@@ -46,7 +46,6 @@ void basicas (char *host, int operando1, char operacion, int operando2) {
 void vectoriales (char * host, vec *operando1, char operacion, vec *operando2) {
 	CLIENT *clnt;
 	res_calculo_vectores * result;
-	int escalar;
 
 	#ifndef DEBUG
 		clnt = clnt_create (host, CALCULADORAPROG, CALCULADORAVER, "udp");
@@ -93,6 +92,7 @@ void vectorPorEscalar (char *host, vec *operando1, int operando2) {
 
 	result = multiplicacionescalar_1(*operando1, operando2, clnt);
 
+	printf("El resultado es: ");
 	int tam = result->res_calculo_vectores_u.resultado.vec_len;
 	for (unsigned int i = 0; i < tam; i++) {
 		printf("%d,", result->res_calculo_vectores_u.resultado.vec_val[i]);
@@ -103,12 +103,73 @@ void vectorPorEscalar (char *host, vec *operando1, int operando2) {
 	#endif	 /* DEBUG */
 }
 
+void matriciales (char *host, matriz *operando1, char operacion, matriz *operando2) {
+	CLIENT *clnt;
+	res_calculo_matrices * result;
+	int escalar;
+
+	#ifndef DEBUG
+		clnt = clnt_create (host, CALCULADORAPROG, CALCULADORAVER, "udp");
+		if (clnt == NULL) {
+			clnt_pcreateerror (host);
+			exit (1);
+		}
+	#endif	/* DEBUG */
+
+	if(operacion == '+')
+		result = sumamatriz_1(*operando1, *operando2, clnt);
+	else if(operacion == '-')
+		result = restamatriz_1(*operando1, *operando2, clnt);
+	else if(operacion == 'x')
+		result = multiplicacionmatriz_1(*operando1, *operando2, clnt);
+	else
+		perror("Operación inválida\n");
+
+	if(result == (res_calculo_matrices *) NULL)
+		clnt_perror(clnt, "call failed");
+
+	printf("El resultado es: ");
+	int tam = result->res_calculo_matrices_u.resultado.orden;
+	for (unsigned int i = 0; i < tam; i++) {
+		for(unsigned int j = 0; j < tam; j++)
+			printf("%d,", result->res_calculo_matrices_u.resultado.filas[i].vec_val[j]);
+		printf("\n");
+	}
+
+	#ifndef	DEBUG
+		clnt_destroy (clnt);
+	#endif	 /* DEBUG */
+}
+
+void matrizPorEscalar(char *host, matriz *operando1, int operando2) {
+	CLIENT *clnt;
+	res_calculo_matrices * result;
+
+	#ifndef DEBUG
+		clnt = clnt_create (host, CALCULADORAPROG, CALCULADORAVER, "udp");
+		if (clnt == NULL) {
+			clnt_pcreateerror (host);
+			exit (1);
+		}
+	#endif	/* DEBUG */
+
+	result = multiplicacionmatrizescalar_1(*operando1, operando2, clnt);
+
+	printf("El resultado es: ");
+	int tam = result->res_calculo_matrices_u.resultado.orden;
+	for (unsigned int i = 0; i < tam; i++) {
+		for(unsigned int j = 0; j < tam; j++)
+			printf("%d,", result->res_calculo_matrices_u.resultado.filas[i].vec_val[j]);
+		printf("\n");
+	}
+
+	#ifndef	DEBUG
+		clnt_destroy (clnt);
+	#endif	 /* DEBUG */
+}
+
 void ayuda () {
-	printf("Uso: ./calculadora_client localhost operando1 operador operando2\n");
-	printf("- Para operaciones con escalares escribir el número y la operación: + - x /");
-	printf("- Para operaciones con vectores escribirlos (x,y,z), los dos del mismo tamaño\n");
-	printf("\tSe pueden sumar (+), restar(-), multiplicar (x) vectores y multiplicar un vector por un escalar\n");
-	printf("Es posible que haya que escapar los paréntesis\n");
+	printf("Uso: ./calculadora_client localhost operando1 operador operando2");
 }
 
 bool ambosEscalares (char *operando1, char *operando2) {
@@ -119,8 +180,16 @@ bool ambosVectores (char *operando1, char *operando2) {
 	return operando1[0] == '(' && operando2[0] == '(';
 }
 
+bool ambosMatrices (char *operando1, char *operando2) {
+	return operando1[0] == '[' && operando2[0] == '[';
+}
+
 bool soloUnVector (char *operando1, char *operando2) {
 	return operando1[0] == '(' || operando2[0] == '(';
+}
+
+bool soloUnaMatriz (char *operando1, char *operando2) {
+	return operando1[0] == '[' || operando2[0] == '[';
 }
 
 vec *crearVector (char *vector_caracteres) {
@@ -155,6 +224,39 @@ vec *crearVector (char *vector_caracteres) {
 	return vector;
 }
 
+matriz *crearMatriz(char *mat_caracteres) {
+	matriz *mat = 0;
+	unsigned int filas = 0;
+
+	for (unsigned int i = 0; i < strlen(mat_caracteres); i++){
+		if(mat_caracteres[i] == '(')
+			filas++;
+	}
+
+	mat = malloc(sizeof(matriz));
+	mat->orden = filas;
+	mat->filas = malloc(sizeof(vec[filas]));
+
+	unsigned int i_fila = 0;
+	for(unsigned i = 1; i < strlen(mat_caracteres)-1; i++) {
+		char *buffer = malloc(sizeof(int)*256);
+
+		unsigned int j = 0;
+		while(mat_caracteres[i] != ')') {
+			//printf("%c\n", mat_caracteres[i]);
+			buffer[j] = mat_caracteres[i];
+			j++;
+			i++;
+		}
+		buffer[j] = ')';
+		buffer[j+1] = '\0';
+
+		mat->filas[i_fila] = *crearVector(buffer);
+		i_fila++;
+	}
+
+	return mat;
+}
 
 void leerArgumentos (int argc, char **argv) {
 	char *host = argv[1];
@@ -171,6 +273,12 @@ void leerArgumentos (int argc, char **argv) {
 
 		vectoriales(host, vector1, operacion, vector2);
 	}
+	else if (ambosMatrices(operando1, operando2)) {
+		matriz *matriz1 = crearMatriz(operando1);
+		matriz *matriz2 = crearMatriz(operando2);
+
+		matriciales(host, matriz1, operacion, matriz2);
+	}
 	else if (soloUnVector(operando1, operando2)) {
 		if(isdigit(operando1[0])) {
 			vec *vector = crearVector(operando2);
@@ -181,6 +289,16 @@ void leerArgumentos (int argc, char **argv) {
 			vec *vector = crearVector(operando1);
 
 			vectorPorEscalar(host, vector, atoi(operando2));
+		}
+	}
+	else if (soloUnaMatriz(operando1, operando2)) {
+		if(isdigit(operando1[0])) {
+			matriz *mat = crearMatriz(operando2);
+			matrizPorEscalar(host, mat, atoi(operando1));
+		}
+		else {//operando2 digito
+			matriz *mat = crearMatriz(operando1);
+			matrizPorEscalar(host, mat, atoi(operando2));
 		}
 	}
 	else
