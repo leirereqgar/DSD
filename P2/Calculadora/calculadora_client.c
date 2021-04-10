@@ -103,34 +103,12 @@ void vectorPorEscalar (char *host, vec *operando1, int operando2) {
 	#endif	 /* DEBUG */
 }
 
-void matriciales (char * host) {
-	CLIENT *clnt;
-	res_calculo_matrices * result;
-
-	matriz arg1;
-	matriz arg2;
-	int escalar;
-
-	#ifndef DEBUG
-		clnt = clnt_create (host, CALCULADORAPROG, CALCULADORAVER, "udp");
-		if (clnt == NULL) {
-			clnt_pcreateerror (host);
-			exit (1);
-		}
-	#endif	/* DEBUG */
-
-	result = sumamatriz_1(arg1, arg2, clnt);
-	result = restamatriz_1(arg1, arg2, clnt);
-	result = multiplicacionmatriz_1(arg1, arg2, clnt);
-	result = multiplicacionmatrizescalar_1(arg1, escalar, clnt);
-
-	#ifndef	DEBUG
-		clnt_destroy (clnt);
-	#endif	 /* DEBUG */
-}
-
 void ayuda () {
-	printf("Uso: ./calculadora_client localhost operando1 operador operando2");
+	printf("Uso: ./calculadora_client localhost operando1 operador operando2\n");
+	printf("- Para operaciones con escalares escribir el número y la operación: + - x /");
+	printf("- Para operaciones con vectores escribirlos (x,y,z), los dos del mismo tamaño\n");
+	printf("\tSe pueden sumar (+), restar(-), multiplicar (x) vectores y multiplicar un vector por un escalar\n");
+	printf("Es posible que haya que escapar los paréntesis\n");
 }
 
 bool ambosEscalares (char *operando1, char *operando2) {
@@ -141,16 +119,8 @@ bool ambosVectores (char *operando1, char *operando2) {
 	return operando1[0] == '(' && operando2[0] == '(';
 }
 
-bool ambosMatrices (char *operando1, char *operando2) {
-	return operando1[0] == '[' && operando2[0] == '[';
-}
-
 bool soloUnVector (char *operando1, char *operando2) {
 	return operando1[0] == '(' || operando2[0] == '(';
-}
-
-bool soloUnaMatriz (char *operando1, char *operando2) {
-	return operando1[0] == '[' || operando2[0] == '[';
 }
 
 vec *crearVector (char *vector_caracteres) {
@@ -185,6 +155,7 @@ vec *crearVector (char *vector_caracteres) {
 	return vector;
 }
 
+
 void leerArgumentos (int argc, char **argv) {
 	char *host = argv[1];
 	char operacion = *argv[3];
@@ -200,9 +171,6 @@ void leerArgumentos (int argc, char **argv) {
 
 		vectoriales(host, vector1, operacion, vector2);
 	}
-	else if (ambosMatrices(operando1, operando2)) {
-		printf("modo matricess");
-	}
 	else if (soloUnVector(operando1, operando2)) {
 		if(isdigit(operando1[0])) {
 			vec *vector = crearVector(operando2);
@@ -213,14 +181,6 @@ void leerArgumentos (int argc, char **argv) {
 			vec *vector = crearVector(operando1);
 
 			vectorPorEscalar(host, vector, atoi(operando2));
-		}
-	}
-	else if (soloUnaMatriz(operando1, operando2)) {
-		if(isdigit(operando1[0])) {
-			printf("escalar por matriz");
-		}
-		else {//operando2 digito
-			printf("matriz por escalar");
 		}
 	}
 	else
