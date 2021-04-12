@@ -1,3 +1,4 @@
 *.o
 calculadora_client
 calculadora_server
+*.zip
