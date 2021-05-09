@@ -1,4 +1,5 @@
 *.o
+*.class
 calculadora_client
 calculadora_server
 *.zip
