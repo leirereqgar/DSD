@@ -3,3 +3,7 @@
 calculadora_client
 calculadora_server
 *.zip
+*.aux
+*.log
+*.out
+*.toc
