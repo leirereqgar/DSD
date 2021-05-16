@@ -5,7 +5,7 @@ import java.rmi.RemoteException;
 import java.net.MalformedURLException;
 
 public class Servidor {
-	static final int num_replicas = 2;
+	static final int num_replicas = 4;
 
 	public static void main (String [] args) {
 		if (System.getSecurityManager() == null) {
