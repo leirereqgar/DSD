@@ -1,0 +1,23 @@
+{
+	"scripts": {
+		"helloworld": "node src/helloworld.js",
+		"calculadora": "node src/calculadora.js",
+		"calculadora-web": "node src/calculadora-web.js",
+		"connections": "node src/connections.js",
+		"mongo": "node src/mongo-test.js"
+	},
+
+	"name": "P4",
+	"version": "1.0.0",
+	"description": "Práctica 4 de DSD",
+	"main": "index.js",
+	"author": "Leire Requena García",
+	"license": "GPL-3.0",
+	"private": false,
+
+	"dependencies": {
+		"jquery": "^3.6.0",
+		"mongodb": "^3.6.9",
+		"socket.io": "^4.1.2"
+	}
+}
