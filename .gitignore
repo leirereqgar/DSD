@@ -7,3 +7,5 @@ calculadora_server
 *.log
 *.out
 *.toc
+*.lock
+P4/node_modules
