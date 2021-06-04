@@ -4,7 +4,8 @@
 		"calculadora": "node src/calculadora.js",
 		"calculadora-web": "node src/calculadora-web.js",
 		"connections": "node src/connections.js",
-		"mongo": "node src/mongo-test.js"
+		"mongo": "node src/mongo-test.js",
+		"p4" : "node src/practica4-servidor.js"
 	},
 
 	"name": "P4",
