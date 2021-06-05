@@ -9,12 +9,27 @@ function AC () {
 
 	boton.on("click", () => {
 		if(boton.text() == "Encender") {
-			socket.emit("sistemas", {nombre: "Aire acondicionado", valor: "encendido"});
-			socket.emit("accion-usuario", {nombre: "Aire acondicionado", valor: "encendido"});
+			socket.emit("sistemas", {nombre: "Aire", valor: "encendido"});
+			socket.emit("accion-usuario", {nombre: "Aire", valor: "encendido"});
 		}
 		else if (boton.text() == "Apagar"){
-			socket.emit("sistemas", {nombre: "Aire acondicionado", valor: "apagado"});
-			socket.emit("accion-usuario", {nombre: "Aire acondicionado", valor: "apagado"});
+			socket.emit("sistemas", {nombre: "Aire", valor: "apagado"});
+			socket.emit("accion-usuario", {nombre: "Aire", valor: "apagado"});
+		}
+	});
+}
+
+function calefaccion () {
+	var boton = $("#cal");
+
+	boton.on("click", () => {
+		if(boton.text() == "Encender") {
+			socket.emit("sistemas", {nombre: "Calefaccion", valor: "encendida"});
+			socket.emit("accion-usuario", {nombre: "Calefaccion", valor: "encendida"});
+		}
+		else if (boton.text() == "Apagar"){
+			socket.emit("sistemas", {nombre: "Calefaccion", valor: "apagada"});
+			socket.emit("accion-usuario", {nombre: "Calefaccion", valor: "apagada"});
 		}
 	});
 }
@@ -38,7 +53,6 @@ function luces() {
 	var boton = $("#luces");
 
 	boton.on("click", () => {
-		console.log("luces");
 		if(boton.text() == "Encender") {
 			socket.emit("sistemas", {nombre: "Luces", valor: "encendidas"});
 			socket.emit("accion-usuario", {nombre: "Luces", valor: "encendidas"});
@@ -59,25 +73,56 @@ function actualizaciones () {
 		if(event.nombre == "Temperatura")
 			$("#temperatura").text(event.valor);
 		else if (event.nombre == "Luminosidad")
-			$("#nivel-luminosidad").text(event.valor);
+			$("#nivel-lum").text(event.valor);
 	});
 
 	socket.on("actualizar-sistemas", (event) => {
-		if (event.nombre == "Aire acondicionado") {
+		if (event.nombre == "Aire") {
 			var boton = $("#AC");
-			if (event.valor = "encendido")
+			if (event.valor == "encendido")
 				boton.html("Apagar");
 			else
 				boton.html("Encender")
 		}
-		else if (event.nombre == "Persianas")
-			$("#nivel-luminosidad").text(event.valor);
+		else if (event.nombre == "Calefaccion") {
+			var boton = $("#cal");
+			if (event.valor == "encendida")
+				boton.html("Apagar");
+			else
+				boton.html("Encender")
+		}
+		else if (event.nombre == "Persianas") {
+			var boton = $("#persianas");
+			if (event.valor == "bajadas")
+				boton.html("Subir");
+			else
+				boton.html("Bajar")
+		}
+		else if (event.nombre == "Luces") {
+			var boton = $("#luces");
+			if (event.valor == "encendidas")
+				boton.html("Apagar");
+			else
+				boton.html("Encender")
+		}
+	});
+
+	socket.on("recibir-alerta", (alerta) => {
+		if (alerta.nombre == "Aire")
+			alert("Se ha encendido el aire acondicionado por sobrepasar los: " + alerta.valor + "º");
+		else if (alerta.nombre == "Calefaccion")
+			alert("Se ha encendido la calefacción porque hay menos de: " + alerta.valor + "º");
+		else if (alerta.nombre == "Persianas")
+			alert("Se han bajado las persianas porque fuera hay poca luz")
+		else if (alerta.nombre == "Luces")
+			alert("Se han encendido porque fuera hay poca luz")
 	});
 
 }
 
 $(() => {
 	AC();
+	calefaccion()
 	persianas();
 	luces();
 	actualizaciones();

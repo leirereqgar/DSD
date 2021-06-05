@@ -24,41 +24,25 @@ function temperatura() {
 	});
 }
 
-function iniciarConexion() {
+function actualizaciones() {
 	socket.on("connect", ()=>{
 		socket.emit("conexion", "sensores");
 	});
 
-	socket.on("dispositivos", (tipo) => {
-		if (tipo.nombre == "Aire acondicionado") {
-			var estado = $("#AC");
-
-			if(tipo.value == "encendido")
-				estado.text("encendido");
-			else
-				estado.text("apagado");
-		}
-		else if (tipo.nombre == "Persianas") {
-			var estado = $("#persianas");
-
-			if(tipo.value == "subidas")
-				estado.text("subidas");
-			else
-				estado.text("bajadas");
-		}
-		else if (tipo.nombre == "Luces") {
-			var estado = $("#luces");
-
-			if(tipo.value == "encendidas")
-				estado.text("encendidas");
-			else
-				estado.text("apagadas");
-		}
-	})
+	socket.on("actualizar-sistemas", (event) => {
+		if (event.nombre == "Aire")
+			$("#AC").html(event.valor);
+		else if (event.nombre == "Calefaccion")
+			$("#cal").html(event.valor);
+		else if (event.nombre == "Persianas")
+			$("#persianas").html(event.valor);
+		else if (event.nombre == "Luces")
+			$("#luces").html(event.valor);
+	});
 }
 
 $(() =>{
 	luminosidad();
 	temperatura();
-	iniciarConexion();
+	actualizaciones();
 });
